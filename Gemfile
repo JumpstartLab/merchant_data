@@ -6,6 +6,7 @@ gem 'faker', :git => 'git://github.com/jcasimir/faker.git'
 gem 'fabrication'
 gem 'rspec-rails'
 gem 'randumb'
+gem 'ruby-debug19', require: "ruby-debug"
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'

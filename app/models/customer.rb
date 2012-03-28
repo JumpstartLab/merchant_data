@@ -4,9 +4,18 @@ class Customer < ActiveRecord::Base
   def transactions
     invoices.map(&:transactions).flatten
   end
+
+  def successful_transactions
+    transactions.select{|txn| !txn.failed? }
+  end
+
+  def favorite_merchants
+    merchant_transactions = successful_transactions.group_by {|t| t.invoice.merchant_id }
+    merchant_transactions.sort_by {|m_id, txns| -txns.count}
+  end
+
   def favorite_merchant
-    merchant_transactions = transactions.group_by {|t| t.invoice.merchant_id }
-    merchant_with_most = merchant_transactions.sort_by {|m_id, txns| -txns.count}.first
+    merchant_with_most = favorite_merchants.first
     Merchant.find_by_id(merchant_with_most.first)
   end
 

@@ -1,7 +1,7 @@
 require 'csv'
 
 module Exporter
-  DEFAULT_EXPORT_TABLES = [ Invoice, InvoiceItem, Item, Merchant, Transaction, User ]
+  DEFAULT_EXPORT_TABLES = [ Invoice, InvoiceItem, Item, Merchant, Transaction ]
   DESTINATION_FOLDER = "tmp/"
 
   def self.included(klass)

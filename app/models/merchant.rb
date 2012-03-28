@@ -7,28 +7,29 @@ class Merchant < ActiveRecord::Base
   end
 
   def favorite_customer
-    defaults_to_zero = Hash.new do |h, k|
-      h[k] = 0
+    defaults_to_zero = Hash.new(0)
+
+    totals = invoices.inject(defaults_to_zero) do |acc, i|
+      acc[i.customer_id] += 1 unless i.pending?
+      acc
     end
-    totals = invoices.inject(defaults_to_zero) do |hash, i|
-      hash[i.customer_id] += i.transactions.count
-      hash
-    end
+
     id = totals.sort_by {|k, v| v}.reverse.first.first
     Customer.find_by_id id
   end
 
   def revenue(date=nil)
-    @revenue ||= begin
-    invoices_of_interest = if date
-      invoices.select{|i| i.updated_at.to_date == date}
-    else
-      invoices.all
+    @revenue       ||= {}
+    @revenue[date] ||= begin
+      invoices_of_interest = if date
+        invoices.select{|i| i.updated_at.to_date == date}
+      else
+        invoices.all
+      end
+      invoices_of_interest.select{|i| !i.pending?}.inject(BigDecimal.new(0)) do |acc, i|
+        acc + i.total
+      end
     end
-    invoices_of_interest.inject(0) do |acc, i|
-      acc + i.total
-    end
-                 end
   end
 
   def self.revenue(date)
@@ -49,5 +50,10 @@ class Merchant < ActiveRecord::Base
 
   def <=>(o)
     (revenue <=> o.revenue) * -1
+  end
+
+  def customers_with_pending_invoices
+    pending_invoices = invoices.select {|invoice| invoice.pending? }
+    pending_invoices.map(&:customer)
   end
 end

@@ -11,14 +11,20 @@ class Item < ActiveRecord::Base
   end
 
   def best_day
-    invoice_items.group_by {|ii| ii.updated_at.to_date}.sort_by {|date, items| -items.map(&:quantity).sum}.first
+    ii_by_date = invoice_items.group_by do |ii|
+      ii.invoice.created_at.to_date
+    end
+    ii_by_date.sort_by do |date, items|
+      -items.map(&:quantity).sum
+    end.first.first
   end
 
   def total_revenue
-    total = invoice_items.inject(0) do |acc, ii|
-      acc + ii.quantity * ii.unit_price
+    @total_revenue ||= begin
+      invoice_items.inject(BigDecimal.new(0)) do |acc, ii|
+        acc + ii.revenue
+      end
     end
-    BigDecimal.new(total)
   end
 
   def total_sold

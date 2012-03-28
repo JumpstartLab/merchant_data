@@ -6,12 +6,16 @@ class Invoice < ActiveRecord::Base
   belongs_to :customer
 
   def total
-    invoice_items.inject(0) do |acc, ii|
-      acc + ii.quantity * ii.unit_price
+    invoice_items.inject(BigDecimal.new(0)) do |acc, ii|
+      acc + ii.revenue
     end
   end
 
   def items_sold
     invoice_items.map(&:quantity).sum
+  end
+
+  def pending?
+    transactions.empty? || transactions.all?(&:failed?)
   end
 end
