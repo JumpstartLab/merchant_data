@@ -6,6 +6,7 @@ unless ARGV.first == 'generate'
   exit(1)
 end
 
-require 'fileutils'
+require_relative '../lib/cli'
 
-FileUtils.rm_rf Dir.glob('tmp/*.csv')
+MerchantData::CLI.generate
+
