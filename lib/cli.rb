@@ -21,8 +21,6 @@ module MerchantData
 
   class Generator
     def run
-      puts "Not really running right now"
-      exit(1)
       clean_up_tmp_dir
       bundle
       prepare_database
@@ -210,9 +208,74 @@ module MerchantData
 
     def report_merchants
       header('Merchant')
+
       subheader('Searching')
+
+      test('.find_by_name')
+      data('name', Merchant.random.name)
+
+      test('.find_all_by_name')
+      name = Merchant.group(:name).having('COUNT(id) > 1').sample.name
+      data('name', name)
+      data('count', Merchant.where(:name => name).count)
+
       subheader('Relationships')
+
+      test('setup')
+      merchant = Merchant.random
+      data('name', merchant.name)
+
+      test('#items')
+      data('count', merchant.items.count)
+      data('an item', merchant.items.sample.name)
+
+      test('#invoices')
+      data('count', merchant.invoices.count)
+      customer = merchant.invoices.where(:status => 'shipped').sample.customer
+      data('a customer', customer.last_name)
+
       subheader('Business Intelligence')
+
+      test('.revenue')
+      date = Invoice.random.created_at.to_date
+      data('date', format_date(date))
+      data('revenue', Merchant.revenue(date))
+
+      test('.most_revenue(3)')
+      most_revenue = Merchant.most_revenue(3)
+      data('first', most_revenue.first.name)
+      data('last', most_revenue.last.name)
+
+      test('.most_items(5)')
+      most_items = Merchant.most_items(5)
+      data('first', most_items.first.name)
+      data('last', most_items.last.name)
+
+      test('#revenue without a date')
+      merchant = Merchant.group(:name).having('COUNT(id) = 1').sample
+      data('name', merchant.name)
+      data('revenue', merchant.revenue)
+
+      test('#revenue with a date')
+      merchant = Merchant.group(:name).having('COUNT(id) = 1').sample
+      data('name', merchant.name)
+      date = merchant.invoices.sample.created_at
+      data('date', format_date(date))
+      data('revenue', merchant.revenue(date))
+
+      test('#favorite_customer')
+      merchant = Merchant.random
+      favorite = merchant.favorite_customer
+      data('name', merchant.name)
+      data('customer first_name', favorite.first_name)
+      data('customer last_name', favorite.last_name)
+
+      test('#customers_with_pending_invoices')
+      merchant = Merchant.group(:name).having('COUNT(id) = 1').sample
+      data('name', merchant.name)
+      pending = merchant.customers_with_pending_invoices
+      data('count', pending.count)
+      data('a last name', pending.map(&:last_name).sample)
     end
 
     def report_transactions
