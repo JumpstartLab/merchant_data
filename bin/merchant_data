@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+unless ARGV.first == 'generate'
+  puts "Generates a new set of fake data for sales engine\n"
+  puts "USAGE: ./bin/merchant_data generate\n"
+  exit(1)
+end
+
+require 'fileutils'
+
+FileUtils.rm_rf Dir.glob('tmp/*.csv')
