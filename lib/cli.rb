@@ -4,11 +4,18 @@ module MerchantData
   class CLI
     def self.generate
       Generator.new.run
+      report
+    end
+
+    def self.report
+      DataModel.new.report
     end
   end
 
   class Generator
     def run
+      puts "Not really running right now"
+      exit(1)
       clean_up_tmp_dir
       bundle
       prepare_database
@@ -56,6 +63,63 @@ module MerchantData
       puts "Exporting data to 'tmp/*.csv'"
       Exporter.export_tables_to_csv
     end
+  end
+
+  class DataModel
+    def report
+      report_items
+      report_invoices
+      report_customers
+      report_merchants
+      report_transactions
+      report_invoice_items
+      report_extensions_to_invoice
+      report_extensions_to_customer
+      report_extensions_to_merchant
+    end
+
+    def header(title)
+      puts '*' * 80
+      puts title.center(80)
+      puts '*' * 80
+    end
+
+    def report_merchants
+      header('Merchant')
+    end
+
+    def report_items
+      header('Item')
+    end
+
+    def report_invoices
+      header('Invoice')
+    end
+
+    def report_customers
+      header('Customer')
+    end
+
+    def report_transactions
+      header('Transactions')
+    end
+
+    def report_invoice_items
+      header('Invoice Items')
+    end
+
+    def report_extensions_to_invoice
+      header('Extension: Invoice')
+    end
+
+    def report_extensions_to_customer
+      header('Extension: Customer')
+    end
+
+    def report_extensions_to_merchant
+      header('Extension: Merchant')
+    end
+
   end
 
 end

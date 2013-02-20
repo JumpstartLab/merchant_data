@@ -1,12 +1,22 @@
 #!/usr/bin/env ruby
 
-unless ARGV.first == 'generate'
-  puts "Generates a new set of fake data for sales engine\n"
-  puts "USAGE: ./bin/merchant_data generate\n"
+command = ARGV.first
+
+unless ['generate', 'report'].include? command
+  puts "USAGE:"
+  puts "\tmerchant_data generate"
+  puts "\t\tGenerates a new set of fake data for sales engine\n"
+  puts
+  puts "\tmerchant_data report"
+  puts "\t\tOutputs data for use in the spec harness"
   exit(1)
 end
 
 require_relative '../lib/cli'
 
-MerchantData::CLI.generate
+if command == 'generate'
+  MerchantData::CLI.generate
+else
+  MerchantData::CLI.report
+end
 
