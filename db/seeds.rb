@@ -11,9 +11,11 @@ end
 
   rand(0..10).times do
     merchant = Merchant.random
+    time = Time.now - (rand(1..504).hours)
     invoice = Fabricate(:invoice, :merchant   => merchant,
                                   :customer   => customer,
-                                  :created_at => Time.now - (rand(1..504).hours))
+                                  :created_at => time,
+                                  :updated_at => time)
     rand(1..8).times do
       item = merchant.items.random
       invoice.invoice_items.create(:item => item, :quantity => rand(1..10), :unit_price => item.unit_price )
