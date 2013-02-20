@@ -151,9 +151,27 @@ module MerchantData
 
     def report_invoices
       header('Invoice')
+
       subheader('Searching')
+      test('shipped')
+      data('count', Invoice.where(:status => 'shipped').count)
+
       subheader('Relationships')
-      subheader('Business Intelligence')
+      test('setup')
+      invoice = Transaction.group(:invoice_id).having('COUNT(id) > 1').sample.invoice
+
+      data('invoice ID', invoice.id)
+      test('#transactions')
+      data('count', invoice.transactions.count)
+      test('#items')
+      data('count', invoice.items.count)
+      data('an item', invoice.items.sample.name)
+      test('#customer')
+      data('first_name',invoice.customer.first_name)
+      data('last_name',invoice.customer.last_name)
+      test('#invoice_items')
+      data('count', invoice.invoice_items.count)
+      data('an item', invoice.invoice_items.sample.item.name)
     end
 
     def report_customers
