@@ -3,12 +3,19 @@ require 'fileutils'
 module MerchantData
   class CLI
     def self.generate
+      load_app
       Generator.new.run
       report
     end
 
     def self.report
+      load_app
       DataModel.new.report
+    end
+
+    def self.load_app
+      puts "Loading rails environment. Bear with me here."
+      require File.expand_path("../../config/environment", __FILE__)
     end
   end
 
@@ -19,7 +26,6 @@ module MerchantData
       clean_up_tmp_dir
       bundle
       prepare_database
-      load_app
       export
     end
 
@@ -54,11 +60,6 @@ module MerchantData
       end
     end
 
-    def load_app
-      puts "Loading rails environment. Bear with me here."
-      require File.expand_path("../../config/environment", __FILE__)
-    end
-
     def export
       puts "Exporting data to 'tmp/*.csv'"
       Exporter.export_tables_to_csv
@@ -68,6 +69,7 @@ module MerchantData
   class DataModel
     def report
       report_items
+      exit
       report_invoices
       report_customers
       report_merchants
@@ -86,14 +88,65 @@ module MerchantData
     end
 
     def subheader(title)
+      puts
       puts " #{title} ".center(80, '-')
+    end
+
+    def test(name)
+      puts
+      puts name
+    end
+
+    def data(title, value)
+      print "#{title}: ".rjust(30)
+      puts value
+    end
+
+    def format_date(date)
+      date.strftime('%a, %e %b %Y')
     end
 
     def report_items
       header('Item')
       subheader('Searching')
+
+      test('.find_by_unit_price')
+      item = Item.group(:unit_price).having('COUNT(id) = 1').sample
+      price = BigDecimal.new(item.unit_price) / 100
+      data("price", price)
+      data("name", item.name)
+
+      test('.find_all_by_name')
+      item = Item.group(:name).having('COUNT(id) > 1').sample
+      data('name', item.name)
+      data('count', Item.where(:name => item.name).count)
+
       subheader('Relationships')
+
+      test('setup')
+      data('name', item.name)
+      test('#invoice_items')
+      item = Item.group(:name).having('COUNT(id)=1').sample
+      data('count', item.invoice_items.count)
+      test('#merchants')
+      data('name', item.merchant.name)
+
       subheader('Business Intelligence')
+
+      test('.most_revenue(5)')
+      top5 = Item.most_revenue(5)
+      data('first', top5.first.name)
+      data('last', top5.last.name)
+
+      test('.most_items(37)')
+      most = Item.most_items(37)
+      data('most[1]', most[1])
+      data('last', most.last)
+
+      test('#best_day')
+      item = Item.group(:name).having('COUNT(id)=1').sample
+      data('name', item.name)
+      data('date', format_date(item.best_day))
     end
 
     def report_invoices
