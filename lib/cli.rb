@@ -79,33 +79,56 @@ module MerchantData
     end
 
     def header(title)
+      puts
       puts '*' * 80
       puts title.center(80)
       puts '*' * 80
     end
 
+    def subheader(title)
+      puts " #{title} ".center(80, '-')
+    end
+
     def report_items
       header('Item')
+      subheader('Searching')
+      subheader('Relationships')
+      subheader('Business Intelligence')
     end
 
     def report_invoices
       header('Invoice')
+      subheader('Searching')
+      subheader('Relationships')
+      subheader('Business Intelligence')
     end
 
     def report_customers
       header('Customer')
+      subheader('Searching')
+      subheader('Relationships')
+      subheader('Business Intelligence')
     end
 
     def report_merchants
       header('Merchant')
+      subheader('Searching')
+      subheader('Relationships')
+      subheader('Business Intelligence')
     end
 
     def report_transactions
       header('Transactions')
+      subheader('Searching')
+      subheader('Relationships')
+      subheader('Business Intelligence')
     end
 
     def report_invoice_items
       header('Invoice Items')
+      subheader('Searching')
+      subheader('Relationships')
+      subheader('Business Intelligence')
     end
 
     def report_extensions_to_invoice
