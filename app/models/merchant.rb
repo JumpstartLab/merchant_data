@@ -22,7 +22,7 @@ class Merchant < ActiveRecord::Base
     @revenue       ||= {}
     @revenue[date] ||= begin
       invoices_of_interest = if date
-        invoices.select{|i| i.updated_at.to_date == date}
+        invoices.select{|i| i.created_at.to_date == date}
       else
         invoices.all
       end
