@@ -84,10 +84,6 @@ module MerchantData
       puts '*' * 80
     end
 
-    def report_merchants
-      header('Merchant')
-    end
-
     def report_items
       header('Item')
     end
@@ -98,6 +94,10 @@ module MerchantData
 
     def report_customers
       header('Customer')
+    end
+
+    def report_merchants
+      header('Merchant')
     end
 
     def report_transactions
