@@ -69,7 +69,6 @@ module MerchantData
   class DataModel
     def report
       report_items
-      exit
       report_invoices
       report_customers
       report_merchants
@@ -176,9 +175,37 @@ module MerchantData
 
     def report_customers
       header('Customer')
+
       subheader('Searching')
+
+      test('.find_by_last_name')
+      last_name = Customer.group(:last_name).having('COUNT(id) > 1').sample.last_name
+      first_names = Customer.where(:last_name => last_name).map(&:first_name)
+      data('last_name', last_name)
+      data('first_names', first_names.join(', '))
+
+      test('.find_all_by_first_name')
+      first_name = Customer.group(:first_name).having('COUNT(id) > 1').sample.first_name
+      data('first_name', first_name)
+      data('count', Customer.where(:first_name => first_name).count)
+
       subheader('Relationships')
+      test('#invoices')
+      customer = Customer.random
+      data('customer ID', customer.id)
+      data('count', customer.invoices.count)
+
       subheader('Business Intelligence')
+
+      test('setup')
+      customer = Transaction.group(:invoice_id).having('COUNT(id) > 1').sample.invoice.customer
+      data('customer ID', customer.id)
+
+      test('#transactions')
+      data('count', customer.transactions.count)
+
+      test('#favorite_merchant')
+      data('name', customer.favorite_merchant.name)
     end
 
     def report_merchants
