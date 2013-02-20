@@ -280,16 +280,44 @@ module MerchantData
 
     def report_transactions
       header('Transactions')
+
       subheader('Searching')
+
+      test('.find_by_credit_card_number')
+      transaction = Transaction.random
+      data('transaction ID', transaction.id)
+      data('credit card #', transaction.credit_card_number)
+
+      test('.find_all_by_result')
+      data('count', Transaction.where(:result => 'success').count)
+
       subheader('Relationships')
-      subheader('Business Intelligence')
+
+      test('#invoice')
+      transaction = Transaction.random
+      data('transaction ID', transaction.id)
+      data('customer ID', transaction.invoice.customer.id)
     end
 
     def report_invoice_items
       header('Invoice Items')
+
       subheader('Searching')
+
+      test('.find_by_item_id')
+      item = InvoiceItem.random
+      data('invoice item ID', item.id)
+
+      test('.find_all_by_quantity')
+      data('quantity', 10)
+      data('count', InvoiceItem.where(:quantity => 10).count)
+
       subheader('Relationships')
-      subheader('Business Intelligence')
+      test('setup')
+      invoice_item = InvoiceItem.random
+      data('invoice item ID', invoice_item.id)
+      test('#item')
+      data('name', invoice_item.item.name)
     end
 
     def report_extensions_to_invoice
