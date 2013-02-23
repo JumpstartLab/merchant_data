@@ -6,9 +6,9 @@ class Invoice < ActiveRecord::Base
   belongs_to :customer
 
   def total
-    invoice_items.inject(BigDecimal.new(0)) do |acc, ii|
-      acc + ii.revenue
-    end
+    sql = "select SUM(ii.quantity * ii.unit_price) total from invoice_items ii inner join invoices i on ii.invoice_id=i.id where i.id=#{id}"
+    value = connection.select_value sql
+    BigDecimal.new(value)/100
   end
 
   def items_sold
