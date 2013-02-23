@@ -236,7 +236,7 @@ module MerchantData
 
       subheader('Business Intelligence')
 
-      test('.revenue')
+      test('.revenue(date)')
       date = Invoice.random.created_at.to_date
       data('date', format_date(date))
       data('revenue', Merchant.revenue(date))
