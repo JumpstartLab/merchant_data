@@ -3,11 +3,11 @@ class Item < ActiveRecord::Base
   belongs_to :merchant
 
   def self.most_revenue(n)
-    all.sort.first(n)
+    joins(:invoice_items).group('invoice_items.item_id').order('SUM(invoice_items.quantity * invoice_items.unit_price) DESC').limit(n)
   end
 
   def self.most_items(n)
-    all.sort_by {|i| -i.total_sold }.first(n)
+    joins(:invoice_items).group('items.id').order('COUNT(invoice_items.id) DESC').limit(n)
   end
 
   def best_day
