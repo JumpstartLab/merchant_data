@@ -47,7 +47,7 @@ module MerchantData
       execute "bundle install"
     end
 
-    def prepare_databes
+    def prepare_database
       [
         "bundle exec rake db:drop",
         "bundle exec rake db:create",
