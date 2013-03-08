@@ -10,8 +10,6 @@ end
 99.times { create_merchant }
 create_merchant(Merchant.random.name)
 
-exit
-
 1000.times do
   customer = Fabricate(:customer)
 
