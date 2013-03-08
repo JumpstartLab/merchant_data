@@ -345,10 +345,22 @@ module MerchantData
 
     def report_extensions_to_customer
       header('Extension: Customer')
+
+      test('#days_since_activity')
+      test('#pending_invoices empty')
+      test('#pending_invoices list')
+      test('.most_items')
+      test('.most_revenue')
     end
 
     def report_extensions_to_merchant
       header('Extension: Merchant')
+
+      test('.dates_by_revenue')
+      # can we rename this to top_n_dates_by_revenue?
+      test('.dates_by_revenue(n)')
+      test('.revenue(range_of_dates)')
+      test('#revenue(range_of_dates)')
     end
 
   end
