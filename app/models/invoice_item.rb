@@ -2,6 +2,10 @@ class InvoiceItem < ActiveRecord::Base
   belongs_to :invoice
   belongs_to :item
 
+  def self.count_on(date)
+    where("date(created_at) = '#{date}'").count
+  end
+
   def pending?
     invoice.pending?
   end

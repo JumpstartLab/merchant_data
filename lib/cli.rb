@@ -322,6 +322,25 @@ module MerchantData
 
     def report_extensions_to_invoice
       header('Extension: Invoice')
+
+      test('.pending')
+      data('invoice ID', Invoice.pending.sample.id)
+
+      test('.average_revenue')
+      data('amount', Invoice.average_revenue)
+
+      test('.average_revenue(date)')
+      date = Invoice.random.created_at.to_date
+      data('date', date)
+      data('amount', Invoice.average_revenue(date))
+
+      test('.average_items')
+      data('count', Invoice.average_items)
+
+      test('.average_items(date)')
+      date = Invoice.random.created_at.to_date
+      data('date', date)
+      data('count', Invoice.average_items(date))
     end
 
     def report_extensions_to_customer
