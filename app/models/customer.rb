@@ -18,7 +18,7 @@ class Customer < ActiveRecord::Base
   end
 
   def self.random_with_transactions
-    Customer.find_by_sql(with_transactions_sql).first
+    Customer.find_by_sql(random_with_transactions_sql).first
   end
 
   def self.random_with_transactions_sql
