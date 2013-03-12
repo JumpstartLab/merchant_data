@@ -347,10 +347,27 @@ module MerchantData
       header('Extension: Customer')
 
       test('#days_since_activity')
+      customer = Customer.random_with_transactions
+      days_since = rand(20)
+      date = customer.most_recent_transaction.created_at.to_date + days_since
+      data('customer ID', customer.id)
+      data('given today is', date)
+      data('days since', days_since)
+
       test('#pending_invoices empty')
+      customer = Customer.random_with_no_pending_invoices
+      data('customerID', customer.id)
+
       test('#pending_invoices list')
+      customer = Customer.random_with_pending_invoices
+      data('customerID', customer.id)
+      data('pending invoice IDs', customer.pending_invoices.map(&:id).join(', '))
+
       test('.most_items')
+      data('customer ID', Customer.most_items.id)
+
       test('.most_revenue')
+      data('customer ID', Customer.most_revenue.id)
     end
 
     def report_extensions_to_merchant
